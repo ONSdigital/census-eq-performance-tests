@@ -1,0 +1,59 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: locust-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: locust-master
+  template:
+    metadata:
+      name: locust-master
+      labels:
+        app: locust-master
+    spec:
+      containers:
+        - name: locust
+          image: eu.gcr.io/census-dev-eq/census-eq-performance-tests
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "0.6"
+          env:
+            - name: LOCUST_MODE
+              value: master
+            - name: TARGET_HOST
+              value: http://survey-runner.catd.onsdigital.uk/
+          ports:
+            - name: loc-master-web
+              containerPort: 8089
+              protocol: TCP
+            - name: loc-master-p1
+              containerPort: 5557
+              protocol: TCP
+            - name: loc-master-p2
+              containerPort: 5558
+              protocol: TCP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: locust-master
+spec:
+  ports:
+    - port: 8089
+      targetPort: loc-master-web
+      protocol: TCP
+      name: loc-master-web
+    - port: 5557
+      targetPort: loc-master-p1
+      protocol: TCP
+      name: loc-master-p1
+    - port: 5558
+      targetPort: loc-master-p2
+      protocol: TCP
+      name: loc-master-p2
+  selector:
+    app: locust-master
+  type: LoadBalancer

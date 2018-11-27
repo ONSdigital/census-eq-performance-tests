@@ -27,7 +27,7 @@ class QuestionnaireMixins:
         redirect_location = response.headers['Location']
 
         if user_wait_time is None:
-            user_wait_time = os.getenv('USER_WAIT_TIME_SECONDS', 15)
+            user_wait_time = int(os.getenv('USER_WAIT_TIME_SECONDS', 15))
 
         time.sleep(user_wait_time)
 

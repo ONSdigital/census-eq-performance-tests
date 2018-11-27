@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: locust-worker
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: locust-worker
+  template:
+    metadata:
+      name: locust-worker
+      labels:
+        app: locust-worker
+    spec:
+      containers:
+        - name: locust
+          image: eu.gcr.io/census-dev-eq/census-eq-performance-tests
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "0.1"
+          env:
+            - name: LOCUST_MODE
+              value: worker
+            - name: LOCUST_MASTER
+              value: locust-master
+            - name: TARGET_HOST
+              value: http://survey-runner.catd.onsdigital.uk/
