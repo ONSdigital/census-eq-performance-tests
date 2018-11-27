@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: locust
-          image: eu.gcr.io/census-dev-eq/census-eq-performance-tests
+          image: eu.gcr.io/census-ci/census-eq-performance-tests
           imagePullPolicy: Always
           resources:
             requests:

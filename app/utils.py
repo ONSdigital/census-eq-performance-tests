@@ -1,8 +1,11 @@
 import os
+import random
 import re
 import time
 
 import backoff
+
+r = random.Random()
 
 
 class QuestionnaireMixins:
@@ -29,7 +32,7 @@ class QuestionnaireMixins:
         if user_wait_time is None:
             user_wait_time = int(os.getenv('USER_WAIT_TIME_SECONDS', 15))
 
-        time.sleep(user_wait_time)
+        time.sleep(r.randrange(user_wait_time, user_wait_time+5))
 
         return redirect_location
 
