@@ -47,18 +47,22 @@ locust -f app/full_test.py --host=http://localhost:5000 -c 100 -r 100 --noweb
 
 1. (Optional) Alter the `TARGET_HOST` setting in the `master.yaml` and `worker.yaml` Kubernetes manifests to point to the instance of survey runner you intend to test
 
-1. Run `scripts/deploy.sh NUMBER_OF_USERS` to create your cluster and deploy the performance tester. The number of locust workers that get run will be derived from the `NUMBER_OF_USERS`
+### Running full test
 
-### Running tests
+1. Run `scripts/run_full_test.sh {NUMBER_OF_USERS}` and navigate to the echoed URL to view the test progress
 
-1. Navigate to the locust master IP on port 8089
+1. The test will run until you stop it
 
-1. Enter the number of users to run (no more than you added as the `NUMBER_OF_USERS` argument in the deploy script)
+1. Once you're done testing remember to download any required stats and then tear down your cluster
 
-1. Enter a reasonable hatch rate to allow both the locust workers and the SUT to ramp up
+### Running spike test
 
-1. Once you're done testing remember to tear down your cluster
+1. Run `scripts/run_spike_test.sh {NUMBER_OF_USERS}` and navigate to the echoed URL to view the test progress
+
+1. The test will automatically run through different user loads before stopping
+
+1. Once you're done testing remember to download any required stats and then tear down your cluster
 
 ### Updating the test scripts
 
-If you need to alter the test scripts run `scripts/push_test_images.sh` to rebuild the docker image and push to the shared container registry
+If you need to alter the test scripts run `scripts/push_test_image.sh` to rebuild the docker image and push to the shared container registry

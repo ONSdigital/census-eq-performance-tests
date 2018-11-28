@@ -26,4 +26,6 @@ spec:
             - name: LOCUST_MASTER
               value: locust-master
             - name: TARGET_HOST
-              value: http://survey-runner.catd.onsdigital.uk/
+              value: http://survey-runner.catd.onsdigital.uk
+            - name: USER_WAIT_TIME_SECONDS
+              value: "15"

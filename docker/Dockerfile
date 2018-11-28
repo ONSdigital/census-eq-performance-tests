@@ -5,7 +5,7 @@ RUN pip install pipenv
 COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
 
-ADD docker-run.sh /docker-run.sh
+ADD docker/docker-run.sh /docker-run.sh
 ADD app /app
 ADD jwt-test-keys /jwt-test-keys
 

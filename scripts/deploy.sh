@@ -2,11 +2,12 @@ my_dir="$(dirname "$0")"
 source $my_dir/vars.sh
 
 INTENDED_USER_LOAD=$1
+
 if [ -z "$INTENDED_USER_LOAD" ]; then
-    INTENDED_USER_LOAD=800 # default to 1 worker
+    echo "Intended user count must be passed"
+    exit 2
 fi
 
-USERS_PER_WORKER=800
 WORKERS=$(expr $(expr $INTENDED_USER_LOAD + $USERS_PER_WORKER - 1) / $USERS_PER_WORKER)
 
 echo "Creating cluster..."
@@ -21,27 +22,26 @@ gcloud beta container \
 --max-nodes "500" \
 --quiet
 
-# everything after this point needs to pass
-set -e
 
 echo "\nGetting cluster credentials..."
 gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT_ID
+if [ "$?" = "1" ]; then
+    exit 1
+fi
 
-echo "\nCreating deployment..."
-kubectl apply -f kubernetes-config --wait
+echo "\nRemoving any existing locust deployment"
+kubectl delete deployment locust-master locust-worker
+
+set -e
+
+echo "\nCreating locust master deployment..."
+kubectl apply -f kubernetes-config
 kubectl rollout status deployment/locust-master
 
-echo "\nCreating $WORKERS locust workers..."
+echo "\nScaling to $WORKERS locust workers..."
 kubectl scale deployment locust-worker --replicas=$WORKERS
 kubectl rollout status deployment/locust-worker
 
 # get locust IP
 EXTERNAL_IP=$(kubectl get service locust-master --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}")
-
-echo "\nLocust setup completed."
-echo "Go to http://$EXTERNAL_IP:8089 to start your load test"
-echo "\n##############################################################################################"
-echo "#                                                                                             #"
-echo "# Make sure you run scripts/delete_cluster.sh to tear down your cluster when you're finished! #"
-echo "#                                                                                             #"
-echo "###############################################################################################"
+export LOCUST_URL=http://$EXTERNAL_IP:8089
