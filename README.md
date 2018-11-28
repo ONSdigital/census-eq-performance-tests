@@ -61,6 +61,8 @@ locust -f app/full_test.py --host=http://localhost:5000 -c 100 -r 100 --noweb
 
 1. The test will automatically run through different user loads before stopping
 
+1. After each step two CSVs will be copied to the /stats directory
+
 1. Once you're done testing remember to download any required stats and then tear down your cluster
 
 ### Updating the test scripts
