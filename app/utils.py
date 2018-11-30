@@ -14,7 +14,8 @@ class QuestionnaireMixins:
 
     def fill_in_page(self, url, name, data, user_wait_time=None):
         # always use the last part of the url as the name
-        assert url.endswith(name), f'{url} does not end with {name}'
+        if os.getenv('ASSERT_EXPECTED_URL') != "False":
+            assert url.endswith(name), f'{url} does not end with {name}'
 
         group_instance = _extract_group_instance(url)
         if group_instance is not None:

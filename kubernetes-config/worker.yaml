@@ -29,3 +29,5 @@ spec:
               value: http://survey-runner.catd.onsdigital.uk
             - name: USER_WAIT_TIME_SECONDS
               value: "15"
+            - name: ASSERT_EXPECTED_URL
+              value: "False"
