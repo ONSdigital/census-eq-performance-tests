@@ -19,7 +19,7 @@ spec:
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: "0.1"
+              cpu: "0.4"
           env:
             - name: LOCUST_MODE
               value: worker

@@ -10,10 +10,10 @@ DOCKER_REPO=eu.gcr.io/census-ci/census-eq-performance-tests
 USERS_PER_WORKER=800
 
 # Time in seconds that Locust should take to get to the full user load
-RAMP_UP_TIME=30
+RAMP_UP_TIME=300
 
 # Amount of time to run each step of the spike test for
-SPIKE_STEP_RUN_TIME=300s
+SPIKE_STEP_RUN_TIME=900
 
 # How many times more than the user count should the maximum spike be
 # I.e. if the user count is 1,000 and this setting is 16 then the largest spike will run 16,000 users
