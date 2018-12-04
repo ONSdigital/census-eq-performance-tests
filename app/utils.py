@@ -11,6 +11,7 @@ r = random.Random()
 class QuestionnaireMixins:
     client = None
     csrftoken = None
+    prevurl = None
 
     def fill_in_page(self, url, name, data, user_wait_time=None):
         # always use the last part of the url as the name
@@ -43,6 +44,7 @@ class QuestionnaireMixins:
 
         response = self.client.get(allow_redirects=allow_redirects, *args, **kwargs)
         if response.content:
+            self.prevurl = args[0]
             self.csrftoken = _extract_csrf_token(response.content.decode('utf8'))
         return response
 
@@ -52,7 +54,12 @@ class QuestionnaireMixins:
         allow_redirects = kwargs.pop('allow_redirects', False)
 
         data['csrf_token'] = self.csrftoken
-        response = self.client.post(allow_redirects=allow_redirects, data=data, *args, **kwargs)
+
+        headers = {
+            'Referer': self.prevurl
+        }
+
+        response = self.client.post(allow_redirects=allow_redirects, headers=headers, data=data, *args, **kwargs)
         return response
 
 
