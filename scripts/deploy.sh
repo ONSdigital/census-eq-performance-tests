@@ -13,9 +13,9 @@ WORKERS=$(expr $(expr $INTENDED_USER_LOAD + $USERS_PER_WORKER - 1) / $USERS_PER_
 echo "Creating cluster..."
 gcloud beta container \
 --project "$PROJECT_ID" clusters create "$CLUSTER_NAME" \
---zone "$ZONE" \
+--region "$REGION" \
 --machine-type "n1-standard-1" \
---num-nodes "3" \
+--num-nodes "1" \
 --enable-ip-alias \
 --enable-autoscaling \
 --min-nodes "1" \
@@ -24,7 +24,7 @@ gcloud beta container \
 
 
 echo "\nGetting cluster credentials..."
-gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT_ID
+gcloud container clusters get-credentials $CLUSTER_NAME --region $REGION --project $PROJECT_ID
 if [ "$?" = "1" ]; then
     exit 1
 fi

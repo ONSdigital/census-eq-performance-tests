@@ -2,7 +2,7 @@
 PROJECT_ID=my-gcp-project-id
 
 CLUSTER_NAME=perftest
-ZONE=europe-west1-b
+REGION=europe-west1
 
 DOCKER_REPO=eu.gcr.io/census-ci/census-eq-performance-tests
 
