@@ -1,33 +1,56 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: locust-worker
+  name: worker
 spec:
   replicas: 0
   selector:
     matchLabels:
-      app: locust-worker
+      app: worker
   template:
     metadata:
-      name: locust-worker
+      name: worker
       labels:
-        app: locust-worker
+        app: worker
     spec:
       containers:
-        - name: locust
+        - name: census-eq-performance-tests
           image: eu.gcr.io/census-ci/census-eq-performance-tests
           imagePullPolicy: Always
           resources:
             requests:
-              cpu: "0.4"
+              cpu: "0.6"
           env:
-            - name: LOCUST_MODE
-              value: worker
-            - name: LOCUST_MASTER
-              value: locust-master
             - name: TARGET_HOST
               value: https://survey-runner.catd.onsdigital.uk
+            - name: TEST_TYPE
+              value: "full_test"
             - name: USER_WAIT_TIME_SECONDS
               value: "15"
             - name: ASSERT_EXPECTED_URL
               value: "False"
+            - name: NUM_USERS
+              value: "1100"
+            - name: STACKDRIVER_ENABLED
+              value: "true"
+            - name: STACKDRIVER_PROJECT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-details
+                  key: gcp_project_id
+            - name: STACKDRIVER_CLUSTER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-details
+                  key: cluster_name
+            - name: STACKDRIVER_CONTAINER_NAME
+              value: census-eq-performance-tests # same as the docker container name
+            - name: STACKDRIVER_NAMESPACE_UID
+              valueFrom:
+                configMapKeyRef:
+                  name: cluster-details
+                  key: default_namespace_uid
+            - name: STACKDRIVER_POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid

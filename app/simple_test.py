@@ -7,3 +7,4 @@ class SurveyRunnerSimpleScenario(HttpLocust):
     task_set = HouseholdTaskSet
     household_individual_count = 2
     visitor_count = 1
+    weight = 1

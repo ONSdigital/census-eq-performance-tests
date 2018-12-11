@@ -1,6 +1,6 @@
 # Census EQ Performance Tests
 
-Locust tests for load testing the census eQ survey runner user flow.
+Script for load testing the census eQ survey runner user flow.
 
 ## Local testing
 
@@ -18,7 +18,8 @@ Simple scenario has 2 household members and 1 visitor:
 
 To run locally:
 ```
-locust -f app/simple_test.py --host=http://localhost:5000 -c 100 -r 100 --no-web
+export TEST_TYPE=simple_test
+pipenv run python app/runner.py
 ```
 
 Full test contains 11 scenarios with between 0 and 10 household members. These are weighted based on proportions derived from 2011 census results.
@@ -27,8 +28,8 @@ Three common scenarios also have a small number of visitors.
 
 To run locally:
 ```
-locust -f app/full_test.py --host=http://localhost:5000 -c 100 -r 100 --no-web
-
+export TEST_TYPE=full_test
+pipenv run python app/runner.py
 ```
 
 ## GCP testing
@@ -49,26 +50,20 @@ locust -f app/full_test.py --host=http://localhost:5000 -c 100 -r 100 --no-web
 
 ### Running full test
 
-1. Run `scripts/run_full_test.sh {NUMBER_OF_USERS}` and navigate to the echoed URL to view the test progress
+1. Run `scripts/deploy.sh {NUMBER_OF_USERS}`
 
 1. The test will run until you stop it
 
-1. Once you're done testing remember to download any required stats and then tear down your cluster
+1. You can scale down the test yourself by running `kubectl scale deployment worker --replicas=0`
+
+1. Monitor your performance tester via stackdriver. The custom custom/eq_perftest/page_load_time metric will indicate the performance as reported by the performance tester.
+
+1. Monitor the EQ application itself via stackdriver
 
 ### Running spike test
 
-1. Run `scripts/run_spike_test.sh {NUMBER_OF_USERS}` and navigate to the echoed URL to view the test progress
-
-1. The test will automatically run through different user loads before stopping
-
-1. After each step two CSVs will be copied to the /stats directory
-
-1. Once you're done testing remember to download any required stats and then tear down your cluster
+# TODO - not yet implemented
 
 ### Updating the test scripts
 
 If you need to alter the test scripts run `scripts/push_test_image.sh` to rebuild the docker image and push to the shared container registry
-
-## Testing tips
-
-Make sure you monitor both the performance metrics of the application under test and locust itself. If the locust workers become resource constrained it will show greater request times and won't be able to generate the desired amount of load.
