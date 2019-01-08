@@ -62,7 +62,9 @@ pipenv run python app/runner.py
 
 ### Running spike test
 
-# TODO - not yet implemented
+1. Set the `SPIKE_STEP_RUN_TIME` and `SPIKE_MAX_USER_MULTIPLIER` values in `vars.sh`
+
+1. Run `scripts/deploy.sh {NUMBER_OF_USERS}` - `NUMBER_OF_USERS` refers to the base load, this will be progressively multiplied up to `SPIKE_MAX_USER_MULTIPLIER` times this value
 
 ### Updating the test scripts
 

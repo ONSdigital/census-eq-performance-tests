@@ -10,10 +10,6 @@ DOCKER_REPO=eu.gcr.io/census-ci/census-eq-performance-tests
 # Note: this value should match the NUM_USERS env var in the k8s manifest 
 USERS_PER_WORKER=1100
 
-# TODO: Time in seconds to get to the full user load
-RAMP_UP_TIME=300
-
-# TODO: re-implement
 # Amount of time to run each step of the spike test for
 SPIKE_STEP_RUN_TIME=900
 
