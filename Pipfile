@@ -4,10 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-locustio = "*"
 sdc-cryptography = "==0.2.3"
 faker = "*"
 backoff = "*"
+requests = "*"
+gevent = "*"
+google-cloud-monitoring = "*"
 
 [dev-packages]
 

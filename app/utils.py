@@ -11,8 +11,9 @@ r = random.Random()
 class QuestionnaireMixins:
     client = None
     csrftoken = None
-    prevurl = None
+    referer = None
 
+    @backoff.on_exception(backoff.expo, Exception, max_tries=10)
     def fill_in_page(self, url, name, data, user_wait_time=None):
         # always use the last part of the url as the name
         if os.getenv('ASSERT_EXPECTED_URL') != "False":
@@ -22,7 +23,10 @@ class QuestionnaireMixins:
         if group_instance is not None:
             name = f'/{group_instance}{name}'
 
-        self.get(url, name=name)
+        response = self.get(url, name=name)
+
+        if response.status_code != 200:
+            raise Exception(f'Got a non-200 ({response.status_code}) back when getting page: {url}')
 
         response = self.post(url, data=data, name=name)
 
@@ -38,28 +42,33 @@ class QuestionnaireMixins:
 
         return redirect_location
 
-    @backoff.on_predicate(backoff.constant, lambda res: res.status_code == 0, interval=5)
-    def get(self, *args, **kwargs):
+    def get(self, url, *args, **kwargs):
         allow_redirects = kwargs.pop('allow_redirects', False)
 
-        response = self.client.get(allow_redirects=allow_redirects, *args, **kwargs)
+        response = self.client.get(url, allow_redirects=allow_redirects, *args, **kwargs)
         if response.content:
             self.prevurl = args[0]
             self.csrftoken = _extract_csrf_token(response.content.decode('utf8'))
+            self.referer = url
         return response
 
-    @backoff.on_predicate(backoff.constant, lambda res: res.status_code == 0, interval=5)
-    def post(self, *args, **kwargs):
+    def post(self, url, *args, **kwargs):
         data = kwargs.pop('data', {})
         allow_redirects = kwargs.pop('allow_redirects', False)
 
+        headers = {}
+        if self.referer:
+            headers['referer'] = self.referer
+
         data['csrf_token'] = self.csrftoken
-
-        headers = {
-            'Referer': self.prevurl
-        }
-
-        response = self.client.post(allow_redirects=allow_redirects, headers=headers, data=data, *args, **kwargs)
+        response = self.client.post(
+            url,
+            allow_redirects=allow_redirects,
+            data=data,
+            headers=headers,
+            *args,
+            **kwargs
+        )
         return response
 
 

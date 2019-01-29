@@ -1,8 +1,7 @@
 import collections
 import itertools
-import re
+
 from faker import Faker
-from locust import TaskSet, task
 
 import utils
 from token_generator import create_token
@@ -26,6 +25,12 @@ RELATIONSHIP_CHOICES = (
 )
 
 
+class TaskSet:
+    def __init__(self, parent):
+        self.parent = parent
+        self.client = parent.client
+
+
 class HouseholdTaskSet(TaskSet, utils.QuestionnaireMixins):
     def __init__(self, parent):
         super().__init__(parent)
@@ -33,7 +38,6 @@ class HouseholdTaskSet(TaskSet, utils.QuestionnaireMixins):
         self.household_individual_count = self.parent.household_individual_count
         self.visitor_count = self.parent.visitor_count
 
-    @task
     def start(self):
         introduction_url = self.do_launch_survey()
         what_is_your_address_url = self.do_start_questionnaire(introduction_url)
