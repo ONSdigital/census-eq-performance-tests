@@ -47,7 +47,6 @@ class QuestionnaireMixins:
 
         response = self.client.get(url, allow_redirects=allow_redirects, *args, **kwargs)
         if response.content:
-            self.prevurl = args[0]
             self.csrftoken = _extract_csrf_token(response.content.decode('utf8'))
             self.referer = url
         return response

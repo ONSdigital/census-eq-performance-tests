@@ -22,7 +22,7 @@ spec:
               cpu: "0.6"
           env:
             - name: TARGET_HOST
-              value: https://survey-runner.catd.onsdigital.uk
+              value: https://runner.catd.census.gov.uk
             - name: TEST_TYPE
               value: "full_test"
             - name: USER_WAIT_TIME_SECONDS

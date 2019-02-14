@@ -7,10 +7,10 @@ class SurveyRunnerScenarioMixin:
     task_set = HouseholdTaskSet
 
 
-class ScenarioA(SurveyRunnerScenarioMixin, HttpLocust):
-    household_individual_count = 0
-    visitor_count = 0
-    weight = 2
+# class ScenarioA(SurveyRunnerScenarioMixin, HttpLocust):
+#     household_individual_count = 0
+#     visitor_count = 0
+#     weight = 2
 
 
 class ScenarioB(SurveyRunnerScenarioMixin, HttpLocust):
